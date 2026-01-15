@@ -40,8 +40,11 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
 
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
-                message_count, chat_id, title = avito_handler.retrieve_message_data(response)
-                await update.message.reply_text('Получено ' + message_count + ' новое сообщение для объявления ' + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/' + chat_id)
+                message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
+                await update.message.reply_text(
+                    'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
+                    + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
+                    + chat_id)
                 time.sleep(2)
                 pass
             else:
@@ -50,8 +53,10 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
         else:
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
-                message_count, chat_id, title = avito_handler.retrieve_message_data(response)
-                await update.message.reply_text('Получено ' + message_count + ' новое сообщение для объявления ' + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/' + chat_id)
+                message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
+                await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
+                                                + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
+                                                + chat_id)
                 time.sleep(600)
                 pass
             elif status_code == 403:
