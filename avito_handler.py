@@ -22,5 +22,5 @@ def retrieve_message_data(chat):
     message_count = str(len(chat['chats']))
     chat_id = chat['chats'][0]['id']
     title = chat['chats'][0]['context']['value']['title']
-    writer = chat['chats'][0]['users']
+    writer = chat['chats'][0]['users'][0]['name']
     return message_count, chat_id, title, writer
