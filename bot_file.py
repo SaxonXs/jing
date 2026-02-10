@@ -41,12 +41,16 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
                 message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
-                await update.message.reply_text(
-                    'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
-                    + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
-                    + chat_id)
-                time.sleep(2)
-                pass
+                try:
+                    await update.message.reply_text(
+                        'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
+                        + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
+                        + chat_id)
+                    time.sleep(2)
+                    pass
+                except:
+                    print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
+                    pass
             else:
                 print(str(datetime.datetime.now()) + ' messages not found. Awaiting 1 minute.')
                 pass
@@ -54,11 +58,16 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
                 message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
-                await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
+                try:
+                    await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
                                                 + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
                                                 + chat_id)
-                time.sleep(600)
-                pass
+                    time.sleep(600)
+                    pass
+                except:
+                    print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
+                    pass
+
             elif status_code == 403:
                 print('Токен просрочился, запрашиваю новый')
                 del avito_token[0]
