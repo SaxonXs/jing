@@ -17,6 +17,7 @@ def check_unread_message(avito_user_id, avito_auth_token, token_type):
             print(str(datetime.datetime.now()) + ' Error code ' + str(chats.status_code) + ' ' + chats.json()['result']['message'])
             return chats.status_code, chats
     except:
+        print('Error with avito accured at ' + str(datetime.datetime.now()))
         return '403', []
 
 def retrieve_message_data(chat):
@@ -25,4 +26,6 @@ def retrieve_message_data(chat):
     chat_id = chat['chats'][0]['id']
     title = chat['chats'][0]['context']['value']['title']
     writer = chat['chats'][0]['users'][0]['name']
-    return message_count, chat_id, title, writer
+    text = chat['chats'][0]['last_message']['content']['text']
+    message_id = chat['chats'][0]['last_message']['id']
+    return message_count, chat_id, title, writer, text, message_id

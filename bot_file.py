@@ -30,6 +30,7 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
     status = 0
     avito_token = []
     token_type = []
+    messages = []
     while status == 0:
         if len(avito_token) == 0 and len(token_type) == 0:
             print('asking for a new token')
@@ -40,34 +41,40 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
 
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
-                message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
-                try:
-                    await update.message.reply_text(
-                        'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
-                        + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
-                        + chat_id)
-                    time.sleep(2)
+                message_count, chat_id, title, writer, text, message_id = avito_handler.retrieve_message_data(response)
+
+                if message_id not in messages:
+                    messages.append(message_id)
+                    try:
+                        await update.message.reply_text(
+                            'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
+                            + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
+                            + chat_id + '/n Текст сообщения: ' + text)
+                        time.sleep(2)
+                        pass
+                    except:
+                        print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
+                        pass
+                else:
+                    print(str(datetime.datetime.now()) + ' new messages not found. Awaiting 1 minute.')
                     pass
-                except:
-                    print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
-                    pass
-            else:
-                print(str(datetime.datetime.now()) + ' messages not found. Awaiting 1 minute.')
-                pass
         else:
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
                 message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
-                try:
-                    await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
-                                                + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
-                                                + chat_id)
-                    time.sleep(600)
-                    pass
-                except:
-                    print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
-                    pass
 
+                if message_id not in messages:
+                    messages.append(message_id)
+                    try:
+                        await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
+                                                + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
+                                                + chat_id + ' /n Текст сообщения: ' + text)
+                        pass
+                    except:
+                        print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
+                        pass
+                else:
+                    pass
             elif status_code == 403:
                 print('Токен просрочился, запрашиваю новый')
                 del avito_token[0]
@@ -80,7 +87,11 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
             else:
                 print(str(datetime.datetime.now()) + ' messages not found. Awaiting 1 minute.')
                 pass
-
+        if len(messages) > 100:
+            messages.clear()
+            print('Cleared message history at ' + str(datetime.datetime.now()))
+        else:
+            pass
         time.sleep(60)
 
 
