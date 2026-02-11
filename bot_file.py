@@ -41,7 +41,7 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
 
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
-                message_count, chat_id, title, writer, text, message_id = avito_handler.retrieve_message_data(response)
+                message_count, chat_id, title, writer, message_id = avito_handler.retrieve_message_data(response)
 
                 if message_id not in messages:
                     messages.append(message_id)
@@ -61,7 +61,7 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
         else:
             status_code, response = avito_handler.check_unread_message(avito_id, avito_token[0], token_type[0])
             if status_code == 200 and len(response.json()['chats']) > 0:
-                message_count, chat_id, title, writer = avito_handler.retrieve_message_data(response)
+                message_count, chat_id, title, writer, message_id = avito_handler.retrieve_message_data(response)
 
                 if message_id not in messages:
                     messages.append(message_id)
