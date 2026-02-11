@@ -49,7 +49,7 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
                         await update.message.reply_text(
                             'Получено ' + message_count + ' новое сообщение от ' + writer + ' для объявления '
                             + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
-                            + chat_id + '/n Текст сообщения: ' + text)
+                            + chat_id) # + '/n Текст сообщения: ' + text)
                         time.sleep(2)
                         pass
                     except:
@@ -68,7 +68,7 @@ async def new_message_screening(update: Update, context: ContextTypes.DEFAULT_TY
                     try:
                         await update.message.reply_text('Получено ' + message_count + ' новое сообщение от '+ writer + ' для объявления '
                                                 + title + '! Ссылка на чат: https://www.avito.ru/profile/messenger/channel/'
-                                                + chat_id + ' /n Текст сообщения: ' + text)
+                                                + chat_id) #+ ' /n Текст сообщения: ' + text)
                         pass
                     except:
                         print(str(datetime.datetime.now()) + ' Error with Telegram API occured. retrying loop')
